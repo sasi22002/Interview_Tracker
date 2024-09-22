@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Tracker</title>
+    
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+        .quote {
+            font-style: italic;
+            color: #555;
+        }
+        .table-container {
+            margin-top: 20px;
+            flex-grow: 1;
+        }
+        .empty-message {
+            text-align: center;
+            font-size: 1.2em;
+            color: #999;
+        }
+        .success-graph {
+            margin-top: 30px;
+        }
+        .btn-add {
+            margin-bottom: 20px;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px 0;
+            text-align: center;
+            background-color: #f7f7f7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="text-center my-5">
+            <h1>Interview Tracker</h1>
+            <p class="quote">"Success is not final, failure is not fatal: It is the courage to continue that counts."</p>
+        </header>
+
+        <!-- Add New Interview Button -->
+        <div class="text-right mb-3">
+            <a href="{% url 'add_question' %}" class="btn btn-primary btn-add">View/Add Questions</a>
+            <a href="{% url 'add_interview' %}" class="btn btn-primary btn-add">Add Interviews</a>
+        </div>
+
+        <!-- Interview Table -->
+        <div class="table-container">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>S.No</th>
+                        <th>Date</th>
+                        <th>Company Name</th>
+                        <th>Status</th>
+                        <th>State</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+                <tbody id="interviewTableBody">
+                    {% if interviews %}
+                        {% for interview in interviews %}
+                        <tr>
+                            <td>{{ interview.sno }}</td>
+                            <td>{{ interview.date }}</td>
+                            <td>{{ interview.company_name.company_name }}</td>
+                            <td>
+                                {% if interview.status == 'failed' %}
+                                    <span class="badge badge-danger">{{ interview.status|title }}</span>
+                                {% else %}
+                                    <span class="badge badge-success">{{ interview.status|title }}</span>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Conditional Styling for State -->
+                            <td>
+                                {% if interview.state|lower == 'failed' %}
+                                    <span class="badge badge-danger">{{ interview.state|title }}</span>
+                                {% else %}
+                                    <span class="badge badge-primary">{{ interview.state|title }}</span>
+                                {% endif %}
+                            </td>
+                            <td><a href="{% url 'view_interview' interview.sno %}" class="btn btn-success">View</a></td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="empty-message">No interview records found.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        {% load static %}
+
+        <!-- Success Rate Graph -->
+        <section class="text-center">
+            <h2>Success Rate Graph</h2>
+            <img src="{% static '/success_rate_graph.webp' %}" alt="Success Rate Graph" class="success-graph img-fluid">
+        </section>
+        
+        <footer>
+            <p>&copy; 2024 Interview Tracker</p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- JavaScript to handle the API call -->
+    <script>
+        document.getElementById('fetchInterviewsBtn').addEventListener('click', function() {
+            fetch('/api/interviews') // Replace with your actual API endpoint
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('interviewTableBody');
+                    tableBody.innerHTML = ''; // Clear existing rows
+                    if (data.length > 0) {
+                        data.forEach((interview, index) => {
+                            tableBody.innerHTML += `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${interview.date}</td>
+                                    <td>${interview.company_name}</td>
+                                    <td>${interview.status}</td>
+                                    <td>${interview.state}</td>
+                                    <td><a href="/interview/${interview.id}" class="btn btn-success">View</a></td>
+                                </tr>`;
+                        });
+                    } else {
+                        tableBody.innerHTML = '<tr><td colspan="6" class="empty-message">No interview recordsdds found.</td></tr>';
+                    }
+                })
+                .catch(error => console.error('Error fetching interviews:', error));
+        });
+    </script>
+</body>
+</html>

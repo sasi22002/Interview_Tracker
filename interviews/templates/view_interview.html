@@ -1,0 +1,10 @@
+<h1>{{ interview.company_name }} - {{ interview.date }}</h1>
+<h2>Questions & Answers</h2>
+
+<ul>
+    {% for qa in interview.questions.all %}
+    <li><strong>Q:</strong> {{ qa.question }} <br><strong>A:</strong> {{ qa.answer }}</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'add_question' interview.id %}">Add Question</a>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Interview</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-color: #f7f7f7;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 600px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .btn-add {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-add:hover {
+            background-color: #0056b3;
+        }
+        .search-container {
+            position: relative;
+        }
+        .search-results {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .search-results div {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .search-results div:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Interview</h1>
+        <form id="interviewForm">
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+            <div class="form-group search-container">
+                <label for="company">Select Company</label>
+                <input type="text" class="form-control" id="companyInput" placeholder="Search or Add Company" required>
+                <div id="searchResults" class="search-results"></div>
+                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#addCompanyModal">
+                    <i class="fas fa-plus"></i> Add New Company
+                </button>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <input type="text" class="form-control" id="status" name="status" required>
+            </div>
+            <div class="form-group">
+                <label for="state">State</label>
+                <input type="text" class="form-control" id="state" name="state" required>
+            </div>
+            <button type="submit" class="btn-add">Add Interview</button>
+        </form>
+    </div>
+
+    <!-- Modal for Adding New Company -->
+    <div class="modal fade" id="addCompanyModal" tabindex="-1" aria-labelledby="addCompanyModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCompanyModalLabel">Add New Company</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="companyForm">
+                        <div class="form-group">
+                            <label for="companyName">Company Name</label>
+                            <input type="text" class="form-control" id="companyName" name="companyName" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Company</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <script>
+        // Search companies
+        document.getElementById('companyInput').addEventListener('input', function() {
+            const query = this.value;
+            const searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML = ''; // Clear previous results
+
+            if (query) {
+                fetch(`/api/companies?search=${query}`) // Update to your API endpoint
+                    .then(response => response.json())
+                    .then(response => {
+                        console.log(response,"ss")
+
+                        if (response.data.length > 0) {
+                            response.data.forEach(company => {
+                                const div = document.createElement('div');
+                                div.textContent = company.company_name;
+                                div.onclick = () => {
+                                    document.getElementById('companyInput').value = company.company_name;
+                                    searchResults.innerHTML = ''; // Clear results after selection
+                                };
+                                searchResults.appendChild(div);
+                            });
+                        } else {
+                            searchResults.innerHTML = '<div>No companies found</div>';
+                        }
+                    })
+                    .catch(error => console.error('Error fetching companies:', error));
+            }
+        });
+
+        // Add company
+        document.getElementById('companyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const companyName = document.getElementById('companyName').value;
+
+            fetch('/api/add_company', { // Update to your actual endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ company_name: companyName })
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert('Company added successfully!');
+                document.getElementById('companyName').value = '';
+                $('#addCompanyModal').modal('hide');
+            })
+            .catch(error => console.error('Error adding company:', error));
+        });
+
+        // Add interview
+        document.getElementById('interviewForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const date = document.getElementById('date').value;
+            const company = document.getElementById('companyInput').value;
+            const status = document.getElementById('status').value;
+            const state = document.getElementById('state').value;
+
+            fetch('/api/add_interview', { // Update to your actual endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    date: date,
+                    company_name: company,
+                    status: status,
+                    state: state
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert('Interview added successfully!');
+                location.reload(); // Reload the page after success
+            })
+            .catch(error => console.error('Error adding interview:', error));
+        });
+    </script>
+</body>
+</html>

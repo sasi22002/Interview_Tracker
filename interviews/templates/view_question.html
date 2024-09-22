@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Questions</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-color: #f7f7f7;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            background-color: white;
+            border-collapse: collapse;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        table th {
+            background-color: #007bff;
+            color: white;
+        }
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: gray;
+        }
+        .add-btn {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>All Interview Questions</h1>
+        
+        <!-- Add Question Button -->
+        <button type="button" class="btn btn-primary add-btn" data-toggle="modal" data-target="#addQuestionModal">
+            Add New Question
+        </button>
+
+        <!-- If no questions found, display a message -->
+        {% if questions %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Interview</th>
+                    <th>Question</th>
+                    <th>Question Type</th>
+                    <th>Answer</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in questions %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ question.interview.company_name.company_name }} - {{ question.interview.date }}</td>
+                    <td>{{ question.question }}</td>
+                    <td>{{ question.question_type }}</td>
+                    <td>{{ question.answer }}</td>
+                    <td>{{ question.interview.date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="no-data">No questions found for the selected interview.</p>
+        {% endif %}
+    </div>
+
+    <!-- Modal for Add New Question -->
+    <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addQuestionModalLabel">Add New Question</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="questionForm">
+                        <div class="form-group">
+                            <label for="interview">Select Interview</label>
+                            <select class="form-control" name="interview" id="interview">
+                                <option value="" selected disabled>-- Select an Interview --</option> <!-- Default empty option -->
+                                {% for interview in interviews %}
+                                <option value="{{ interview.sno }}">{{ interview.company_name.company_name }} - {{ interview.date }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="question">Question</label>
+                            <input type="text" class="form-control" id="question" name="question" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="question">Question Type</label>
+                            <input type="text" class="form-control" id="question_type" name="question_type" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Select Company</label>
+                            <select class="form-control" name="company" id="company">
+                                <option value="" selected disabled>-- Select a Company --</option> <!-- Default empty option -->
+                                {% for comp in company %}
+                                <option value="{{ comp.id }}">{{ comp.company_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="answer">Answer</label>
+                            <input type="text" class="form-control" id="answer" name="answer" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Question</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Script to handle form submission as JSON -->
+    <script>
+        document.getElementById('questionForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent form from submitting the default way
+
+            const interview = document.getElementById('interview').value;
+            const question = document.getElementById('question').value;
+            const question_type = document.getElementById('question_type').value;
+            const company = document.getElementById('company').value;
+            const answer = document.getElementById('answer').value;
+
+            const data = {
+                interview: interview,
+                question: question,
+                question_type: question_type,
+                company: company,
+                answer: answer
+            };
+
+            fetch('/add_question', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Success:', result.message);
+                alert(result.message);
+                location.reload(); // Reload the page after success
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding the question.');
+            });
+        });
+    </script>
+</body>
+</html>
