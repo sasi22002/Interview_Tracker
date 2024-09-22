@@ -1,0 +1,11 @@
+asgiref==3.8.1
+Django
+django-rest-framework==0.1.0
+djangorestframework==3.14.0
+numpy==2.0.0
+opencv-contrib-python==4.10.0.84
+opencv-python==4.10.0.84
+opencv-python-headless==4.10.0.84
+pytz==2024.2
+sqlparse==0.5.1
+tzdata==2024.1
