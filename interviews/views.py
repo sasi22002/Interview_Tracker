@@ -32,7 +32,6 @@ def add_question_web(request):
         'interviews': interview,
         'company': companies,
         }
-        # import pdb;pdb.set_trace()
         return render(request, 'view_question.html', context=context)
     
     if request.method == 'POST':
@@ -51,7 +50,6 @@ def add_question_web(request):
             return JsonResponse({'status': 'success', 'message': 'Question added successfully!'},status=200)
 
         except json.JSONDecodeError:
-            import pdb;pdb.set_trace()
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
         
     if request.method == 'DELETE':
@@ -145,7 +143,6 @@ def edit_interview_web(request,id):
         return render(request, 'edit_interview.html', {'interview': list(interview)[0]})
         
     except Exception as e:
-        import pdb;pdb.set_trace()
         return JsonResponse({'status': 'error', 'message': 'error'}, status=500)
             
    
