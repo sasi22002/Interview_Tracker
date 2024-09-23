@@ -16,7 +16,7 @@ class Interview(models.Model):
     company_name = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='company_int')
     status = models.CharField(max_length=50)  # e.g., 'Did well', 'Not well'
     state = models.CharField(max_length=100)  # e.g., 'Moved to next', 'Failed', etc.
-    
+    is_deleted = models.BooleanField(default=False)
     class Meta:
         db_table = 'interview_master'
    
@@ -26,6 +26,7 @@ class QuestionAnswer(models.Model):
     answer = models.TextField()
     question_type = models.CharField(max_length=20)
     comapny_question = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='company_question')
+    is_deleted = models.BooleanField(default=False)
     
     class Meta:
         db_table = 'question_master'

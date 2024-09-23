@@ -196,7 +196,8 @@
             .then(response => response.json())
             .then(result => {
                 alert('Interview added successfully!');
-                location.reload(); // Reload the page after success
+                window.location.href = '/';  // Redirect after success (adjust as necessary)
+
             })
             .catch(error => console.error('Error adding interview:', error));
         });

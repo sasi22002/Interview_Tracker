@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Interview</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-color: #f7f7f7;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 600px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .btn-edit {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-edit:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Interview</h1>
+        <form id="interviewForm">
+            <!-- Date Field -->
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" class="form-control" id="date" name="date" value="{{ interview.date|date:'Y-m-d' }}" required>
+            </div>
+
+            <!-- Company Search Field -->
+            <div class="form-group search-container">
+                <label for="company">Select Company</label>
+                <input type="text" class="form-control" id="companyInput" placeholder="Search or Add Company" value="{{ interview.company_name__company_name }}" readonly>
+                <div id="searchResults" class="search-results"></div>
+            </div>
+
+            <!-- Status Field -->
+            <div class="form-group">
+                <label for="status">Status</label>
+                <input type="text" class="form-control" id="status" name="status" value="{{ interview.status }}" required>
+            </div>
+
+            <!-- State Field -->
+            <div class="form-group">
+                <label for="state">State</label>
+                <input type="text" class="form-control" id="state" name="state" value="{{ interview.state }}" required>
+            </div>
+
+            <!-- Edit Button -->
+            <button type="submit" class="btn-edit">Update Interview</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Pre-fill the form with interview data
+        document.getElementById('interviewForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const date = document.getElementById('date').value;
+            const company = document.getElementById('companyInput').value;
+            const status = document.getElementById('status').value;
+            const state = document.getElementById('state').value;
+
+            fetch(`/api/edit_interview`, {  // Replace with your API endpoint for editing
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    id: "{{ interview.sno }}" ,
+                    date: date,
+                    company_name: company,
+                    status: status,
+                    state: state
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert('Interview updated successfully!');
+                window.location.href = '/';  // Redirect after success (adjust as necessary)
+            })
+            .catch(error => console.error('Error updating interview:', error));
+        });
+    </script>
+</body>
+</html>
