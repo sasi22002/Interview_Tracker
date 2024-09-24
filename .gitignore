@@ -52,10 +52,12 @@ Thumbs.db
 
 .env
 
-db.sqlite3
+.sqlite3
 
 
 interviews/__init__.py
 interviews/__pycache__/*
 interviews/migrations/*
 interviewTracker/__init__.py
+interviews/docs/*
+
