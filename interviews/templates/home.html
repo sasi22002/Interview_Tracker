@@ -44,6 +44,16 @@
             text-align: center;
             background-color: #f7f7f7;
         }
+        .td-action{
+            display: flex;
+            justify-content: space-evenly;
+        }
+        th{
+            text-align: center;
+        }
+        td{
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -69,9 +79,7 @@
                         <th>Company Name</th>
                         <th>Status</th>
                         <th>State</th>
-                        <th>View</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <th>Actions</th>
 
                     </tr>
                 </thead>
@@ -98,10 +106,9 @@
                                     <span class="badge badge-primary">{{ interview.state|title }}</span>
                                 {% endif %}
                             </td>
-                            <td><a href="{% url 'view_interview' interview.sno %}" class="fas fa-eye" style='font-size:24px'></a></td>
-                            <td><a href="{% url 'edit_interview' interview.sno %}" class="fas fa-edit" style='font-size:24px'></a></td>
-                            <td>
-                                <span class="delete-icon" data-id="{{ interview.sno }}" onclick="deleteInterview(this)" style="cursor: pointer;">🗑️</span>
+                            <td class="td-action"><a href="{% url 'view_interview' interview.sno %}" class="fas fa-eye" style='font-size:24px'></a>
+                            <a href="{% url 'edit_interview' interview.sno %}" class="fas fa-edit" style='font-size:24px'></a>
+                            <span class="delete-icon" data-id="{{ interview.sno }}" onclick="deleteInterview(this)" style="cursor: pointer;">🗑️</span>
                             </td>
                         </tr>
                         {% endfor %}

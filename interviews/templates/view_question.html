@@ -29,9 +29,9 @@
         }
         table th, table td {
             padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+           
         }
+        
         table th {
             background-color: #007bff;
             color: white;
@@ -47,6 +47,21 @@
         .add-btn {
             margin-bottom: 20px;
         }
+        .wider-column {
+            width: 150px; /* Adjust this value as needed */
+        }
+        .action-style{            
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 24px;
+            width: 150px; /* Adjust this value as needed */
+            text-align: center;
+            
+        }
+       
+        
+
     </style>
 </head>
 <body>
@@ -67,9 +82,9 @@
                     <th>Interview</th>
                     <th>Question</th>
                     <th>Question Type</th>
-                    <th>Answer</th>
-                    <th>Date</th>
-                    <th>Actions</th>
+                    <th >Answer</th>
+                    <th class="wider-column">Date</th>
+                    <th class="wider-column">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -81,11 +96,12 @@
                     <td>{{ question.question_type }}</td>
                     <td>{{ question.answer }}</td>
                     <td>{{ question.interview.date }}</td>
-                    <td style='font-size:24px'>
-
-                    <a class="fas fa-eye" href="{% url 'add_question_view' question.id %}" style='font-size:24px'></a>
+                    
+                    <td class = "action-style">
+                    <a class="fas fa-eye" href="{% url 'add_question_view' question.id %}" ></a>
                     <span class="delete-icon" data-id="{{ question.id }}" onclick="deleteQuestion(this)" style="cursor: pointer;">🗑️</span>
                     </td>
+                    
                 </tr>
                 {% endfor %}
             </tbody>
