@@ -61,3 +61,5 @@ interviews/migrations/*
 interviewTracker/__init__.py
 interviews/docs/*
 
+prod.sqlite3
+staging.sqlite3

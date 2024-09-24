@@ -54,6 +54,10 @@
         td{
             text-align: center;
         }
+        .text-left{
+            text-align: left; 
+            width: 100px;
+        }
     </style>
 </head>
 <body>
@@ -67,7 +71,10 @@
         <div class="text-right mb-3">
             <a href="{% url 'add_question' %}" class="btn btn-primary btn-add">View/Add Questions</a>
             <a href="{% url 'add_interview' %}" class="btn btn-primary btn-add">Add Interviews</a>
+            <a href="{% url 'show_questions' %}" class="btn btn-primary btn-add">Study Questions</a>
+
         </div>
+
 
         <!-- Interview Table -->
         <div class="table-container">
@@ -91,8 +98,13 @@
                             <td>{{ interview.date }}</td>
                             <td>{{ interview.company_name.company_name }}</td>
                             <td>
-                                {% if interview.status|lower == 'failed' %}
+                                
+                                {% if interview.status|lower == 'failed' or interview.status|lower == 'not scheduled'%}
                                     <span class="badge badge-danger">{{ interview.status|title }}</span>
+                                {% elif interview.status|lower == 'waitinglist'%}
+                                    <span class="badge badge-dark">{{ interview.status|title }}</span>
+                                {% elif interview.status|lower == 'upcoming'%}
+                                    <span class="badge badge-warning">{{ interview.status|title }}</span>
                                 {% else %}
                                     <span class="badge badge-success">{{ interview.status|title }}</span>
                                 {% endif %}

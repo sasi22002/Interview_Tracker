@@ -12,6 +12,11 @@ def home(request):
     interviews = Interview.objects.all()
     return render(request, 'home.html', {'interviews': interviews})
 
+
+def show_questions(request):
+    questions = PrepareQuestions.objects.all()
+    return render(request, 'show_questions.html', {'questions': questions})
+
 def add_interview_Web(request):
     return render(request, 'add_interview.html')
 

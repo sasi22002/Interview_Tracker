@@ -21,13 +21,38 @@ class Interview(models.Model):
         db_table = 'interview_master'
    
 class QuestionAnswer(models.Model):
+    """
+    Field : question_type
+    Choices - Python , Django , Cloud , General , Others , Database , Pandas
+    
+    """
     interview = models.ForeignKey(Interview, on_delete=models.CASCADE, related_name='questions')
     question = models.TextField()
     answer = models.TextField()
     question_type = models.CharField(max_length=20)
     comapny_question = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='company_question')
     is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     
     class Meta:
         db_table = 'question_master'
    
+
+
+class PrepareQuestions(models.Model):
+    """ 
+    Model for save overall questiona and answers
+    to prepare for an Interview 
+    
+    """
+    question = models.TextField()
+    answer = models.TextField()
+    belongs_to = models.CharField(max_length=20)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    
+    class Meta:
+        db_table = 'preparation_master'
+   
+    

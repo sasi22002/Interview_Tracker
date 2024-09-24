@@ -22,5 +22,7 @@ urlpatterns = [
     path('add_question', views.add_question_web, name='add_question'),
     path('add_question/view/<int:id>/', views.view_single_question, name='add_question_view'),
     path('edit_question/view/<int:id>/', views.edit_single_question, name='edit_question_view'),
+    path('show-questions/', views.show_questions, name='show_questions'),
+
 ]
 

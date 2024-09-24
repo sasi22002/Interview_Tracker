@@ -11,3 +11,5 @@ sqlparse==0.5.1
 tzdata==2024.1
 gunicorn
 uvicorn
+python-docx==1.1.2
+pandas==2.2.3 
