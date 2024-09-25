@@ -19,7 +19,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             padding: 20px;
             margin: 20px auto;
-            max-width: 900px;
+            max-width: 1500px;
         }
         .card h2 {
             margin-bottom: 15px;
@@ -81,7 +81,22 @@
         .edit-icon:hover {
             color: #0056b3;             /* Darker color on hover */
         }
-        
+
+        /* Terminal-style formatting for answer */
+        pre.code-style {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            line-height: 1.5;
+        }
+
+        pre.code-style code {
+            color: #f8f8f2;
+        }
     </style>
 </head>
 <body>
@@ -94,10 +109,11 @@
                 <td><a href="{% url 'edit_question_view' question.0.id %}" class="fas fa-edit edit-icon" style='font-size:24px'></a></td>
 
             </div>
-            <p><strong>Answer:</strong> {{ question.0.answer }}</p>
+            <p><strong>Answer:</strong></p>
+            
+            <pre class="code-style"><code>{{ question.0.answer }}</code></pre> <!-- This will display the answer in a terminal-like format -->
             <p class="question-type"><strong>Type:</strong> {{ question.0.question_type }}</p>
             <p><strong>Company:</strong> {{ question.0.comapny_question__company_name }}</p>
-
         </div>
     </div>
 

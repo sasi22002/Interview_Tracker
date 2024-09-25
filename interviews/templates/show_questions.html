@@ -7,9 +7,9 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            padding: 30px;
         }
         .container {
             max-width: 900px;
@@ -19,12 +19,37 @@
             text-align: center;
             color: #007BFF;
             margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .search-bar {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .search-bar input, .search-bar button {
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .search-bar button {
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
         }
         .card {
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
         }
         .card-header {
             background-color: #007BFF;
@@ -37,19 +62,44 @@
         }
         .card-body {
             padding: 15px;
+            background-color: #fff;
         }
         .question {
             font-weight: bold;
             font-size: 1.1rem;
             margin-bottom: 10px;
+            color: #333;
         }
         .answer {
             margin-bottom: 10px;
-            color: #333;
-        }
-        .question-type {
-            font-style: italic;
             color: #666;
+        }
+        .no-results {
+            text-align: center;
+            color: #999;
+            margin-top: 50px;
+        }
+        .search-bar .date-filter {
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        /* Terminal-style formatting for answer */
+        pre.code-style {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            line-height: 1.5;
+        }
+
+        pre.code-style code {
+            color: #f8f8f2;
         }
     </style>
 </head>
@@ -57,22 +107,66 @@
 
     <div class="container">
         <h1>All Questions & Answers</h1>
-        
-        <!-- Loop through questions -->
-        {% for question in questions %}
-        <div class="card">
-            <div class="card-header">
-                Question #{{ forloop.counter }}
-            </div>
-            <div class="card-body">
-                <p class="question">{{ question.question }}</p>
-                <p class="answer"><strong>Answer:</strong> {{ question.answer }}</p>
-                {% comment %} <p class="question-type"><strong>Type:</strong> {{ question.belongs_to }}</p> {% endcomment %}
-            </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search questions..." onkeyup="searchQuestions()">
+            <input type="date" id="dateFilter" class="date-filter" onchange="searchQuestions()">
+            <button onclick="searchQuestions()">Search</button>
         </div>
-        {% endfor %}
-        
+
+        <!-- Questions List -->
+        <div id="questionsContainer">
+            {% for question in questions %}
+            <div class="card" data-created="{{ question.created_at|date:'Y-m-d' }}">
+                <div class="card-header">
+                    Question #{{ forloop.counter }}
+                </div>
+                <div class="card-body">
+                    <p class="question">{{ question.question }}</p>
+                    {% comment %} <p class="answer"><strong>Answer:</strong> {{ question.answer }}</p> {% endcomment %}
+                    <pre class="code-style">Answer:<code>{{ question.answer }}</code></pre> <!-- This will display the answer in a terminal-like format -->
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="no-results" style="display: none;">
+            No questions found.
+        </div>
     </div>
+
+    <script>
+        // Function to search and filter questions
+        function searchQuestions() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const dateFilter = document.getElementById('dateFilter').value;
+            const container = document.getElementById('questionsContainer');
+            const cards = container.getElementsByClassName('card');
+            let hasResults = false;
+
+            for (let i = 0; i < cards.length; i++) {
+                const questionText = cards[i].querySelector('.question').innerText.toLowerCase();
+                const cardDate = cards[i].getAttribute('data-created');
+                
+                // Check if the question matches the search query and date matches the filter
+                const matchesQuery = questionText.includes(query);
+                const matchesDate = !dateFilter || cardDate === dateFilter;
+
+                if (matchesQuery && matchesDate) {
+                    cards[i].style.display = '';
+                    hasResults = true;
+                } else {
+                    cards[i].style.display = 'none';
+                }
+            }
+
+            // Show "No Results" message if no matches are found
+            document.getElementById('noResults').style.display = hasResults ? 'none' : 'block';
+        }
+    </script>
 
 </body>
 </html>
