@@ -23,6 +23,7 @@ urlpatterns = [
     path('add_question/view/<int:id>/', views.view_single_question, name='add_question_view'),
     path('edit_question/view/<int:id>/', views.edit_single_question, name='edit_question_view'),
     path('show-questions/', views.show_questions, name='show_questions'),
+    path('show-questions/update-study_questions', views.update_study_questions, name='update-study_questions'),
 
 ]
 

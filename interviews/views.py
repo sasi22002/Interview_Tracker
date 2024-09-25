@@ -17,6 +17,22 @@ def show_questions(request):
     questions = PrepareQuestions.objects.all()
     return render(request, 'show_questions.html', {'questions': questions})
 
+
+
+def update_study_questions(request):
+    #UPDATE API FOR CHANGE ANS IN STUDY MATERIAL 
+    
+    if request.method == 'POST':
+        try:
+            # Parse the JSON body
+            data = json.loads(request.body) 
+            PrepareQuestions.objects.filter(id=data['id']).update(answer=data['answer'])
+            return JsonResponse({'status': True, 'message': 'Question updated successfully!'},status=200)
+             
+        except:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+
+
 def add_interview_Web(request):
     return render(request, 'add_interview.html')
 

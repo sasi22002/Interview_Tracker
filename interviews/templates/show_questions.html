@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Questions</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -70,10 +72,7 @@
             margin-bottom: 10px;
             color: #333;
         }
-        .answer {
-            margin-bottom: 10px;
-            color: #666;
-        }
+      
         .no-results {
             text-align: center;
             color: #999;
@@ -90,16 +89,39 @@
         pre.code-style {
             background-color: #2d2d2d;
             color: #f8f8f2;
-            padding: 15px;
+            padding: 10px; /* Reduced padding */
             border-radius: 8px;
             font-family: 'Courier New', Courier, monospace;
             overflow-x: auto;
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
             line-height: 1.5;
+            text-align: left; /* Align text to the left */
+            white-space: pre-wrap; /* Allow text wrapping inside the <pre> */
         }
+        
+        .answer {
+            margin-bottom: 10px;
+            color: #666;
+        }
+        
 
         pre.code-style code {
             color: #f8f8f2;
+        }
+
+        .edit-icon {
+            cursor: pointer;
+            float: right;
+            margin-right: 10px;
+            color: #007BFF;
+        }
+
+        .textarea-style {
+            width: 100%;
+            padding: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 5px;
+            border: 1px solid #ddd;
         }
     </style>
 </head>
@@ -121,12 +143,18 @@
             <div class="card" data-created="{{ question.created_at|date:'Y-m-d' }}">
                 <div class="card-header">
                     Question #{{ forloop.counter }}
+                    <i class="fas fa-edit edit-icon" onclick="toggleEdit(this, {{ question.id }})" style="color: white;"></i> <!-- Edit Icon -->
                 </div>
+
                 <div class="card-body">
                     <p class="question">{{ question.question }}</p>
-                    {% comment %} <p class="answer"><strong>Answer:</strong> {{ question.answer }}</p> {% endcomment %}
-                    <pre class="code-style">Answer:<code>{{ question.answer }}</code></pre> <!-- This will display the answer in a terminal-like format -->
+                    
+                    <!-- Editable answer field -->
+                    <pre class="code-style answer" id="answerDisplay{{ question.id }}"><code>{{ question.answer }}</code></pre>
 
+                    <textarea id="editAnswer{{ question.id }}" class="textarea-style" style="display:none;">{{ question.answer }}</textarea>
+
+                    <button class="btn btn-success" id="saveBtn{{ question.id }}" style="display:none;" onclick="saveAnswer({{ question.id }})">Save</button>
                 </div>
             </div>
             {% endfor %}
@@ -139,6 +167,54 @@
     </div>
 
     <script>
+        // Toggle edit mode
+        function toggleEdit(icon, id) {
+            const answerDisplay = document.getElementById('answerDisplay' + id);
+            const textarea = document.getElementById('editAnswer' + id);
+            const saveBtn = document.getElementById('saveBtn' + id);
+
+            if (textarea.style.display === 'none') {
+                // Show textarea for editing
+                textarea.style.display = 'block';
+                answerDisplay.style.display = 'none';
+                saveBtn.style.display = 'inline-block';
+            } else {
+                // Hide textarea and show original code block
+                textarea.style.display = 'none';
+                answerDisplay.style.display = 'block';
+                saveBtn.style.display = 'none';
+            }
+        }
+
+        // Save edited answer and call the API
+        function saveAnswer(id) {
+            const textarea = document.getElementById('editAnswer' + id);
+            const answer = textarea.value;
+            const id_val = id;
+
+            // Call the API to save the edited answer
+            fetch(`update-study_questions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ answer: answer ,id:id_val})
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status) {
+                      // Update the displayed answer
+                      const answerDisplay = document.getElementById('answerDisplay' + id);
+                      answerDisplay.querySelector('code').textContent = answer;
+
+                      // Toggle off edit mode
+                      toggleEdit(null, id);
+                  }
+              }).catch(error => {
+                  console.error('Error saving answer:', error);
+              });
+        }
+
         // Function to search and filter questions
         function searchQuestions() {
             const query = document.getElementById('searchInput').value.toLowerCase();
