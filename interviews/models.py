@@ -52,6 +52,7 @@ class StudyMaterial(models.Model):
     """
     question = models.TextField()
     answer = models.TextField()
+    is_deleted = models.BooleanField(default=False)
     belongs_to = models.CharField(max_length=20)
     repeat_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, null=True)

@@ -18,7 +18,7 @@ def home(request):
 
 
 def show_questions(request):
-    questions = StudyMaterial.objects.all()
+    questions = StudyMaterial.objects.filter(is_deleted=False)
     return render(request, 'show_questions.html', {'questions': questions})
 
 
@@ -26,15 +26,44 @@ def show_questions(request):
 def update_study_questions(request):
     #UPDATE API FOR CHANGE ANS IN STUDY MATERIAL 
     
-    if request.method == 'POST':
+    if request.method == 'PUT':
         try:
             # Parse the JSON body
             data = json.loads(request.body) 
-            StudyMaterial.objects.filter(id=data['id']).update(answer=data['answer'])
+            StudyMaterial.objects.filter(id=data['id'],is_deleted=False).update(answer=data['answer'])
             return JsonResponse({'status': True, 'message': 'Question updated successfully!'},status=200)
              
         except:
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+        
+    if request.method == 'POST':
+        try:
+            # Parse the JSON body
+            data = json.loads(request.body) 
+            exist = StudyMaterial.objects.filter(question__iexact=data['question'],is_deleted=False).exists()
+            if exist:
+                return JsonResponse({'status': 'error', 'message': 'QUestion already exist'}, status=400)
+
+            StudyMaterial.objects.create(
+                question=data['question'],answer=data['answer'],belongs_to=data['type']
+            )
+                
+            return JsonResponse({'status': True, 'message': 'Question created successfully!'},status=200)
+             
+        except:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+        
+    if request.method == 'DELETE':
+        try:
+            import pdb;pdb.set_trace()
+            # Parse the JSON body
+            data = json.loads(request.body) 
+            StudyMaterial.objects.filter(id=data['id']).update(is_deleted=True)
+            return JsonResponse({'status': True, 'message': 'Question deleted successfully!'},status=200)
+             
+        except:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+        
 
 
 def add_interview_Web(request):
