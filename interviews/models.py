@@ -17,6 +17,8 @@ class Interview(models.Model):
     status = models.CharField(max_length=50)  # e.g., 'Did well', 'Not well'
     state = models.CharField(max_length=100)  # e.g., 'Moved to next', 'Failed', etc.
     is_deleted = models.BooleanField(default=False)
+    is_attended = models.BooleanField(default=False)
+    description = models.CharField(null=True,max_length=500)
     class Meta:
         db_table = 'interview_master'
    
@@ -40,7 +42,7 @@ class QuestionAnswer(models.Model):
    
 
 
-class PrepareQuestions(models.Model):
+class StudyMaterial(models.Model):
     """ 
     Model for save overall questiona and answers
     to prepare for an Interview 
@@ -49,6 +51,7 @@ class PrepareQuestions(models.Model):
     question = models.TextField()
     answer = models.TextField()
     belongs_to = models.CharField(max_length=20)
+    repeat_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     

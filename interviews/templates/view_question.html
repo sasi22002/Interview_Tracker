@@ -11,7 +11,7 @@
 
     <style>
         body {
-            background-color: #f7f7f7;
+            background-color: #e9e7f0;
         }
         .container {
             margin-top: 50px;
@@ -59,17 +59,11 @@
             text-align: center;
             
         }
-        .terminal-input {
-            font-family: 'Courier New', Courier, monospace; /* Monospace font for terminal look */
-            background-color: #1e1e1e; /* Dark background */
-            color: #ffffff; /* White text */
-            border: 1px solid #007bff; /* Border color */
-            border-radius: 4px; /* Rounded corners */
-        }
-    
-        .terminal-input:focus {
-            outline: none; /* Remove default outline */
-            border-color: #0056b3; /* Darker border on focus */
+        .truncate-text {
+            max-width: 200px; /* Adjust this width to your liking */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
        
         
@@ -106,7 +100,7 @@
                     <td>{{ question.interview.company_name.company_name }} - {{ question.interview.date }}</td>
                     <td>{{ question.question }}</td>
                     <td>{{ question.question_type }}</td>
-                    <td>{{ question.answer }}</td>
+                    <td class="truncate-text" >{{ question.answer }}</td>
                     <td>{{ question.interview.date }}</td>
                     
                     <td class = "action-style">

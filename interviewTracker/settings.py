@@ -88,6 +88,10 @@ WSGI_APPLICATION = 'interviewTracker.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'prod.sqlite3',
+    },
+    'staging': {
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'staging.sqlite3',
     }
 }
