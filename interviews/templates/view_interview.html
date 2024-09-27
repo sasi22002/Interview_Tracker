@@ -1,10 +1,181 @@
-<h1>{{ interview.company_name }} - {{ interview.date }}</h1>
-<h2>Questions & Answers</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Details</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #e9e7f0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 800px;
+        }
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-size: 1.5rem;
+            padding: 15px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .question {
+            background-color: #e9ecef;
+            border-left: 4px solid #007bff;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        .sk{
+            border-radius: 20px;
+        }
+        .question strong {
+            color: #333;
+        }
+        .description {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+       /* General button-like styles */
+        .status, .state {
+            display: inline-block;
+            padding: 5px 22px;
+            font-weight: bold;
+            color: white;
+            border-radius: 25px;
+            text-align: center;
+            font-size: 16px;
+            text-transform: capitalize; 
+        }
 
-<ul>
-    {% for qa in interview.questions.all %}
-    <li><strong>Q:</strong> {{ qa.question }} <br><strong>A:</strong> {{ qa.answer }}</li>
-    {% endfor %}
-</ul>
+        /* Specific styles for the status */
+        .status.pass {
+            background-color: green; /* Green for 'pass' */
+        }
 
-{% comment %} <a href="{% url 'add_question' interview.id %}">Add Question</a> {% endcomment %}
+        .status.waitinglist {
+            background-color: blue; /* Blue for 'waiting' */
+        }
+
+        /* Default status style (for anything other than 'pass' and 'waiting') */
+        .status {
+            background-color: red; /* Red for all other statuses */
+        }
+
+        /* Styles for the state, which can look like a button as well */
+        .state {
+            background-color: gray; /* Adjust the color as needed */
+            border: 1px solid #ccc; /* Add a slight border for a button effect */
+        }
+
+        .date {
+            color: #6c757d; /* Gray for date */
+        }
+        pre.code-style {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px; /* Reduced padding */
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            line-height: 1.5;
+            text-align: left; /* Align text to the left */
+            white-space: pre-wrap; /* Allow text wrapping inside the <pre> */
+        }
+        
+        .answer {
+            margin-bottom: 10px;
+            color: #666;
+        }
+        .no-data {
+            text-align: center;
+            color: gray;
+            padding: 20px;
+            font-style: italic;
+        }
+        .description {
+            margin-top: 20px;
+            font-size: 16px; /* Adjust font size as needed */
+            line-height: 1.5; /* Improve readability */
+        }
+        
+        .description ol {
+            padding-left: 20px; /* Indent the list */
+        }
+        
+        .description li {
+            margin-bottom: 5px; /* Space between list items */
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card sk">
+            <div class="card-header">
+                {{ interview.company_name }} - {{ interview.date }}
+            </div>
+            <div class="card-body">
+                <p>
+                    <span class="label">Status:</span> 
+                    <span class="status {{ interview.status|lower }}">{{ interview.status }}</span>
+                </p>
+                <p>
+                    <span class="label">State:</span> 
+                    <span class="state">{{ interview.state }}</span>
+                </p>
+                
+                <strong>Description:</strong>
+
+                <div class="description">
+                    <ol>
+                        {% for point in interview.description.splitlines %}
+                            <li>{{ point }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+                
+                
+            </div>
+            <div>
+                <h2>Questions Asked : </h2>
+                <ul class="list-unstyled">
+                    {% if interview.questions %}
+                        {% for qa in interview.questions %}
+                            <li class="question">
+                                <strong>Questions:</strong> {{ qa.question }} <br>
+                                <pre class="code-style answer"><code>{{ qa.answer }}</code></pre>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="no-data">
+                            <strong>Questions not updated for this interview.</strong>
+                        </li>
+                    {% endif %}
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

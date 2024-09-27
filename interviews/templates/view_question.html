@@ -27,10 +27,26 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
-        table th, table td {
+
+        table th, table td, table tr {
             padding: 15px;
-           
+            border: 1px solid black;  /* Black borders for cells */
+            vertical-align: middle;    /* Ensure all cells align vertically in the middle */
         }
+        
+        
+        .action-style {
+            text-align: center;
+            font-size: 24px;
+            width: 150px; /* Adjust this value if needed */
+            vertical-align: middle; /* Ensures vertical centering */
+        }
+        
+        .action-style a, .action-style span {
+            margin: 0 10px; /* Adds spacing between the icons */
+            display: inline-block; /* Ensures icons remain inline */
+        }
+        
         
         table th {
             background-color: #007bff;
@@ -50,15 +66,7 @@
         .wider-column {
             width: 150px; /* Adjust this value as needed */
         }
-        .action-style{            
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            font-size: 24px;
-            width: 150px; /* Adjust this value as needed */
-            text-align: center;
-            
-        }
+       
         .truncate-text {
             max-width: 200px; /* Adjust this width to your liking */
             white-space: nowrap;

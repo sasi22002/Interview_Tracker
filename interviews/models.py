@@ -19,6 +19,8 @@ class Interview(models.Model):
     is_deleted = models.BooleanField(default=False)
     is_attended = models.BooleanField(default=False)
     description = models.CharField(null=True,max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     class Meta:
         db_table = 'interview_master'
    

@@ -6,15 +6,19 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 from rest_framework import permissions,status
 
+from django.shortcuts import get_object_or_404
+from django.db.models import Prefetch
+
+
 
 
 def home(request):
-    interviews = Interview.objects.all()
+    interviews = Interview.objects.filter(is_deleted=False).order_by('-date')
     return render(request, 'home.html', {'interviews': interviews})
 
 
 def show_questions(request):
-    questions = PrepareQuestions.objects.all()
+    questions = StudyMaterial.objects.all()
     return render(request, 'show_questions.html', {'questions': questions})
 
 
@@ -26,7 +30,7 @@ def update_study_questions(request):
         try:
             # Parse the JSON body
             data = json.loads(request.body) 
-            PrepareQuestions.objects.filter(id=data['id']).update(answer=data['answer'])
+            StudyMaterial.objects.filter(id=data['id']).update(answer=data['answer'])
             return JsonResponse({'status': True, 'message': 'Question updated successfully!'},status=200)
              
         except:
@@ -38,8 +42,22 @@ def add_interview_Web(request):
 
 
 def view_interview_web(request, id):
-    interview = Interview.objects.filter(sno=id).values()
-    return render(request, 'view_interview.html', {'interview': list(interview)})
+    # Define a filtered queryset for questions
+    filtered_questions = QuestionAnswer.objects.filter(is_deleted=False)
+    
+    interview = Interview.objects.filter(sno=id).prefetch_related(Prefetch('questions', queryset=filtered_questions)).first()
+    interview_data = {
+        'sno': interview.sno,
+        'date': interview.date,
+        'company_name': interview.company_name.company_name,
+        'status': interview.status,
+        'state': interview.state,
+        'is_deleted': interview.is_deleted,
+        'is_attended': interview.is_attended,
+        'description': interview.description,
+        'questions': [{'question': qa.question, 'answer': qa.answer} for qa in interview.questions.all()]
+    }
+    return render(request, 'view_interview.html', {'interview': interview_data})
 
 @csrf_exempt
 def add_question_web(request):
@@ -160,7 +178,7 @@ def save_interview(request):
 
 def edit_interview_web(request,id):
     try:        
-        interview = Interview.objects.filter(sno=id).values('sno', 'date', 'company_name__company_name', 'status', 'state')
+        interview = Interview.objects.filter(sno=id).values('sno', 'date', 'company_name__company_name', 'status', 'state','description')
         return render(request, 'edit_interview.html', {'interview': list(interview)[0]})
         
     except Exception as e:
@@ -176,7 +194,7 @@ def edit_interview(request):
             #check data is exist
             exist = Interview.objects.filter(sno=data['id']).exists()
             if exist:
-                Interview.objects.filter(sno=data['id']).update(date=data['date'],status=data['status'],state=data['state'])   
+                Interview.objects.filter(sno=data['id']).update(date=data['date'],status=data['status'],state=data['state'],description=data['description'])   
 
                 return JsonResponse({'status': 'success', 'message': 'Interview updated successfully'}, status=201)
                                

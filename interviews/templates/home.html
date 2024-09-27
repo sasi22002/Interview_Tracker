@@ -95,7 +95,7 @@
                     {% if interviews %}
                         {% for interview in interviews %}
                         <tr>
-                            <td>{{ interview.sno }}</td>
+                            <td>{{ forloop.counter }}</td>
                             <td>{{ interview.date }}</td>
                             <td>{{ interview.company_name.company_name }}</td>
                             <td>
