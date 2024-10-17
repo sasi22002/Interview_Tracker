@@ -115,6 +115,8 @@
                             <td>
                                 {% if interview.state|lower == 'failed' or interview.state == 'Failed' %}
                                 <span class="badge badge-danger">{{ interview.state|title }}</span>
+                                {% elif interview.status|lower == 'passed' or interview.state == 'Passed'%}
+                                <span class="badge badge-success">{{ interview.status|title }}</span>
                                 {% else %}
                                     <span class="badge badge-primary">{{ interview.state|title }}</span>
                                 {% endif %}
@@ -136,10 +138,11 @@
         {% load static %}
 
         <!-- Success Rate Graph -->
-        <section class="text-center">
+        <!-- <section class="text-center">
             <h2>Success Rate Graph</h2>
-            <img src="{% static '/success_rate_graph.webp' %}" alt="Success Rate Graph" class="success-graph img-fluid">
-        </section>
+            <img src="{{ plot_url }}" alt="Interview Status Plot">
+
+        </section> -->
         
         <footer>
             <p>&copy; 2024 Interview Tracker</p>

@@ -62,11 +62,11 @@
         }
 
         /* Specific styles for the status */
-        .status.pass {
+        .status.passed {
             background-color: green; /* Green for 'pass' */
         }
 
-        .status.waitinglist {
+        .status.pending {
             background-color: blue; /* Blue for 'waiting' */
         }
 
@@ -137,7 +137,7 @@
                 </p>
                 <p>
                     <span class="label">State:</span> 
-                    <span class="state">{{ interview.state }}</span>
+                    <span class="status {{ interview.state|lower }}">{{ interview.state }}</span>
                 </p>
                 
                 <strong>Description:</strong>

@@ -1,20 +1,22 @@
 from django.shortcuts import render
+
+from interviews.plot_gen import plot_interview_status
 from .models import *
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 from rest_framework import permissions,status
-
 from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch
 
 
 
-
 def home(request):
     interviews = Interview.objects.filter(is_deleted=False).order_by('-date')
-    return render(request, 'home.html', {'interviews': interviews})
+    plot = plot_interview_status()
+    
+    return render(request, 'home.html', {'interviews': interviews,'plot_url': f'data:image/png;base64,{plot}'})
 
 
 def show_questions(request):
@@ -55,9 +57,9 @@ def update_study_questions(request):
         
     if request.method == 'DELETE':
         try:
-            import pdb;pdb.set_trace()
             # Parse the JSON body
-            data = json.loads(request.body) 
+            data = json.loads(request.body)
+            
             StudyMaterial.objects.filter(id=data['id']).update(is_deleted=True)
             return JsonResponse({'status': True, 'message': 'Question deleted successfully!'},status=200)
              
