@@ -63,3 +63,8 @@ interviews/docs/*
 
 prod.sqlite3
 staging.sqlite3
+smart_city/*
+question.md
+docs.md
+work.py
+interviewTracker/prod_setting.py

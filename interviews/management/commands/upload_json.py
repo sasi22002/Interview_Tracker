@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 import os,django,logging
 import pandas as pd
 from docx import Document
-from interviews.models import PrepareQuestions  # Replace with your app's name
+from interviews.models import StudyMaterial  # Replace with your app's name
 from interviewTracker.settings import BASE_DIR
 import json
 
@@ -18,9 +18,9 @@ class Command(BaseCommand):
                 json_data = json.load(json_file)
 
             for val in json_data:
-                exist = PrepareQuestions.objects.filter(question=val,belongs_to="Interview").exists()
+                exist = StudyMaterial.objects.filter(question=val,belongs_to="Interview").exists()
                 if not exist:                  
-                    PrepareQuestions.objects.create(
+                    StudyMaterial.objects.create(
                         question=val,
                         answer=json_data[val],
                         belongs_to="Interview"  
