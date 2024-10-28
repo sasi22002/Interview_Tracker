@@ -100,7 +100,7 @@
                             <td>{{ interview.company_name.company_name }}</td>
                             <td>
                                 
-                                {% if interview.status|lower == 'failed' or interview.status|lower == 'not scheduled'%}
+                                {% if interview.status|lower == 'failed' or interview.status|lower == 'not scheduled' or interview.status|lower == 'rejected'%}
                                     <span class="badge badge-danger">{{ interview.status|title }}</span>
                                 {% elif interview.status|lower == 'waitinglist'%}
                                     <span class="badge badge-dark">{{ interview.status|title }}</span>
@@ -114,9 +114,11 @@
                             <!-- Conditional Styling for State -->
                             <td>
                                 {% if interview.state|lower == 'failed' or interview.state == 'Failed' %}
-                                <span class="badge badge-danger">{{ interview.state|title }}</span>
-                                {% elif interview.status|lower == 'passed' or interview.state == 'Passed'%}
-                                <span class="badge badge-success">{{ interview.status|title }}</span>
+                                    <span class="badge badge-danger">{{ interview.state|title }}</span>
+                                {% elif interview.state|lower == 'not did well' or interview.state == 'Not Did Well' %}
+                                    <span class="badge badge-danger">{{ interview.state|title }}</span>
+                                {% elif interview.state|lower == 'passed' or interview.state == 'Passed'%}
+                                    <span class="badge badge-success">{{ interview.state|title }}</span>
                                 {% else %}
                                     <span class="badge badge-primary">{{ interview.state|title }}</span>
                                 {% endif %}
