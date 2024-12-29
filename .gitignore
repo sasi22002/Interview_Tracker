@@ -60,8 +60,6 @@ interviews/migrations/*
 interviewTracker/__init__.py
 interviews/docs/*
 
-prod.sqlite3
-staging.sqlite3
 smart_city/*
 question.md
 docs.md
