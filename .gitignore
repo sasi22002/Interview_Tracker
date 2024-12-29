@@ -52,7 +52,6 @@ Thumbs.db
 
 .env
 
-.sqlite3
 
 
 interviews/__init__.py
