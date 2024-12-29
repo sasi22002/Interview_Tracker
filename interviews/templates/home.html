@@ -59,6 +59,10 @@
             text-align: left; 
             width: 100px;
         }
+        .badge-custom {
+            background-color: black !important;
+            color: violet !important;
+        }
     </style>
 </head>
 <body>
@@ -106,6 +110,8 @@
                                     <span class="badge badge-dark">{{ interview.status|title }}</span>
                                 {% elif interview.status|lower == 'upcoming'%}
                                     <span class="badge badge-warning">{{ interview.status|title }}</span>
+                                {% elif interview.status|lower == 'offered'%}
+                                    <span class="badge badge-custom">{{ interview.status|title }}</span>
                                 {% else %}
                                     <span class="badge badge-success">{{ interview.status|title }}</span>
                                 {% endif %}
@@ -119,6 +125,8 @@
                                     <span class="badge badge-danger">{{ interview.state|title }}</span>
                                 {% elif interview.state|lower == 'passed' or interview.state == 'Passed'%}
                                     <span class="badge badge-success">{{ interview.state|title }}</span>
+                                {% elif interview.state|lower == 'offer rejected' or interview.state == 'Offer rejected'%}
+                                    <span class="badge badge-custom">{{ interview.state|title }}</span>
                                 {% else %}
                                     <span class="badge badge-primary">{{ interview.state|title }}</span>
                                 {% endif %}
