@@ -63,6 +63,16 @@
             background-color: black !important;
             color: violet !important;
         }
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
+        
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+        
     </style>
 </head>
 <body>
@@ -123,14 +133,17 @@
                                     <span class="badge badge-danger">{{ interview.state|title }}</span>
                                 {% elif interview.state|lower == 'not did well' or interview.state == 'Not Did Well' %}
                                     <span class="badge badge-danger">{{ interview.state|title }}</span>
-                                {% elif interview.state|lower == 'passed' or interview.state == 'Passed'%}
+                                {% elif interview.state|lower == 'passed' or interview.state == 'Passed' %}
                                     <span class="badge badge-success">{{ interview.state|title }}</span>
-                                {% elif interview.state|lower == 'offer rejected' or interview.state == 'Offer rejected'%}
+                                {% elif interview.state|lower == 'offer rejected' or interview.state == 'Offer rejected' %}
                                     <span class="badge badge-custom">{{ interview.state|title }}</span>
+                                {% elif interview.state|lower == 'joined' or interview.state == 'Joined' %}
+                                    <span class="badge badge-custom blink">{{ interview.state|title }}</span>
                                 {% else %}
                                     <span class="badge badge-primary">{{ interview.state|title }}</span>
                                 {% endif %}
                             </td>
+                            
                             <td class="td-action"><a href="{% url 'view_interview' interview.sno %}" class="fas fa-eye" style='font-size:24px'></a>
                             <a href="{% url 'edit_interview' interview.sno %}" class="fas fa-edit" style='font-size:24px'></a>
                             <span class="delete-icon" data-id="{{ interview.sno }}" onclick="deleteInterview(this)" style="cursor: pointer;">🗑️</span>
