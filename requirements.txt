@@ -1,0 +1,18 @@
+asgiref==3.8.1
+Django
+django-rest-framework==0.1.0
+djangorestframework==3.14.0
+numpy
+# opencv-contrib-python==4.10.0.84
+# opencv-python==4.10.0.84
+# opencv-python-headless==4.10.0.84
+pytz==2024.2
+# sqlparse==0.5.1
+# tzdata==2024.1
+# gunicorn
+# uvicorn
+python-docx==1.1.2
+pandas
+# mplcursors==0.5.3
+# matplotlib==3.9.2
+# matplotlib-inline==0.1.7
